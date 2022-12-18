@@ -21,6 +21,11 @@ class Company(models.Model):
     city = models.CharField(max_length=100, blank=True)
     post_code = models.CharField(max_length=6, blank=True)
     country = models.CharField(max_length=100, blank=True)
+    total_bruto_salaries = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_salary_vsaoi_dd = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_salary_vsaoi_dn = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_salary_iin = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_salary_netto = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -30,6 +35,18 @@ class Company(models.Model):
 
     def get_house_number(self):
         return self.street_adress_1
+
+    def salaries_total(self):
+        """
+        Update grand total each time a line item is added,
+        accounting for delivery costs.
+        """
+        self.total_bruto_salaries = self.employer.aggregate(Sum('salary_brutto'))['salary_brutto__sum'] or 0
+        self.total_salary_vsaoi_dd = self.employer.aggregate(Sum('salary_vsaoi_dd'))['salary_vsaoi_dd__sum'] or 0
+        self.total_salary_vsaoi_dn = self.employer.aggregate(Sum('salary_vsaoi_dn'))['salary_vsaoi_dn__sum'] or 0
+        self.total_salary_iin = self.employer.aggregate(Sum('salary_iin'))['salary_iin__sum'] or 0
+        self.total_salary_netto = self.employer.aggregate(Sum('salary_netto'))['salary_netto__sum'] or 0
+        super().save()
 
     def save(self, *args, **kwargs):
         """

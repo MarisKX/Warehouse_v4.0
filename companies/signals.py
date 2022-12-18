@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Warehouse
+from .models import Warehouse, Company, Employees
 from stock_db.models import StockHistoryEntry, StockItem
 from invoices.models import (
     InvoiceItem,
@@ -143,3 +143,19 @@ def create_stockmovement_on_save_for_contstruction(sender, instance, **kwargs):
             doc_nr=instance.c_invoice.c_invoice_number,
             quantity_minus=instance.quantity
         )
+
+
+@receiver(post_save, sender=Employees)
+def update_on_save(sender, instance, created, **kwargs):
+    """
+    Update order total on lineitem update/create
+    """
+    instance.company.salaries_total()
+
+
+@receiver(post_delete, sender=Employees)
+def update_on_delete(sender, instance, **kwargs):
+    """
+    Update order total on lineitem delete
+    """
+    instance.company.salaries_total()

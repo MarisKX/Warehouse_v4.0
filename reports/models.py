@@ -1,8 +1,11 @@
 from django.db import models
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 from citizens.models import Citizen
-from companies.models import Company, Warehouse
+from companies.models import Company, Warehouse, Employees
 from invoices.models import Invoice, WorkOrder, RetailSale, ConstructionInvoice
+from bank.models import BankAccount, BankAccountEntry
+from taxes.models import TaxReport
 
 
 # Create your models here.
@@ -36,8 +39,8 @@ class Report(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Override the original save method to set the company name
-        if it hasn't been set already.
+        Override the original save method to calculate salaries and all taxes for period
+        
         """
         if self.report_number == 1:
             if self.report_type == "M":
@@ -53,12 +56,173 @@ class Report(models.Model):
 
             all_retail_sales = RetailSale.objects.filter(date__year=self.report_year, date__month=self.report_month)
             retail_gpd_dic = all_retail_sales.aggregate(Sum('amount_total'))
-            self.gpd_from_retail = retail_gpd_dic['amount_total__sum']
+            self.gpd_from_retail = retail_gpd_dic['amount_total__sum'] or 0
 
             all_construction = ConstructionInvoice.objects.filter(date__year=self.report_year, date__month=self.report_month)
             construction_gpd_dic = all_construction.aggregate(Sum('amount_total'))
-            self.gpd_from_construction = construction_gpd_dic['amount_total__sum']
+            self.gpd_from_construction = construction_gpd_dic['amount_total__sum'] or 0
 
             self.gpd_in_period = self.gpd_from_invoices + self.gpd_from_retail + self.gpd_from_construction
 
+            all_employees = Employees.objects.all().order_by("name")
+            all_companies = Company.objects.all().order_by("name")
+
+            ##### Calculates and send to bank salaries for period #####
+
+            #for e in all_employees:
+            #    employee_bank = get_object_or_404(BankAccount, bank_account_owner_pp=e.name)
+            #    employer_bank = get_object_or_404(BankAccount, bank_account_owner_com=e.company)
+            #    BankAccountEntry.objects.create(
+            #        bank_account=employee_bank,
+            #        description="Salary " + str(self.report_month) + '/' + str(self.report_year),
+            #        amount_plus=e.salary_netto,
+            #        )
+            #    BankAccountEntry.objects.create(
+            #        bank_account=employer_bank,
+            #        description="Salary " + str(e.name.full_name) + ' - ' + str(self.report_month) + '/' + str(self.report_year),
+            #        amount_minus=e.salary_netto,
+            #        )
+            
+            for company in all_companies:
+                company_bank = get_object_or_404(BankAccount, bank_account_owner_com=company)
+                gov_bank = get_object_or_404(BankAccount, bank_account_owner_com='4750100005')
+
+                ##### Employes and their taxes from salary#####
+
+                #BankAccountEntry.objects.create(
+                #    bank_account=gov_bank,
+                #    description="IIN " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
+                #    amount_plus=company.total_salary_iin,
+                #    )
+                #BankAccountEntry.objects.create(
+                #    bank_account=company_bank,
+                #    description="IIN " + str(self.report_month) + '/' + str(self.report_year),
+                #    amount_minus=company.total_salary_iin,
+                #    )
+                #BankAccountEntry.objects.create(
+                #    bank_account=gov_bank,
+                #    description="VSAOI " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
+                #    amount_plus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
+                #    )
+                #BankAccountEntry.objects.create(
+                #    bank_account=company_bank,
+                #    description="VSAOI " + str(self.report_month) + '/' + str(self.report_year),
+                #    amount_minus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
+                #    )
+                
+                # Creates VSAOI Tax report
+
+                TaxReport.objects.create(
+                    company=company,
+                    tax_date=self.date,
+                    type="4",
+                    amount=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
+                    taxes_paid=True,
+                    taxes_paid_confirmed=True
+                    )
+
+                # Creates IIN Tax report
+
+                TaxReport.objects.create(
+                    company=company,
+                    tax_date=self.date,
+                    type="5",
+                    amount=company.total_salary_iin,
+                    taxes_paid=True,
+                    taxes_paid_confirmed=True
+                    )
+
+                ##### BTW Calculations #####
+
+                ### Incomes ###
+
+                # Sales invoices
+                out_invoices = Invoice.objects.filter(
+                    suplier=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                out_invoices_btw_dic = out_invoices.aggregate(Sum('btw_total'))
+                btw_from_out_invoices = out_invoices_btw_dic['btw_total__sum'] or 0
+
+                # Retail Sales invoices
+                out_retail_invoices = RetailSale.objects.filter(
+                    retailer=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                out_retail_invoices_btw_dic = out_retail_invoices.aggregate(Sum('btw_total'))
+                btw_from_out_retail_invoices = out_retail_invoices_btw_dic['btw_total__sum'] or 0
+
+                # Construction Invoices
+                constr_out_invoices = ConstructionInvoice.objects.filter(
+                    constructor=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                constr_out_invoices_btw_dic = constr_out_invoices.aggregate(Sum('btw_total'))
+                btw_from_constr_out_invoices = constr_out_invoices_btw_dic['btw_total__sum'] or 0
+
+                ### Expenses ###
+
+                # Incoming Invoices
+                in_invoices = Invoice.objects.filter(
+                    customer=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                in_invoices_btw_dic = in_invoices.aggregate(Sum('btw_total'))
+                btw_from_in_invoices = in_invoices_btw_dic['btw_total__sum'] or 0
+
+                # Incoming Construction Invoices
+                constr_in_invoices = ConstructionInvoice.objects.filter(
+                    build_customer=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                constr_in_invoices_btw_dic = constr_out_invoices.aggregate(Sum('btw_total'))
+                btw_from_constr_in_invoices = constr_in_invoices_btw_dic['btw_total__sum'] or 0
+
+                total_btw_taxes_to_pay = btw_from_out_retail_invoices+btw_from_out_invoices+btw_from_constr_out_invoices-btw_from_in_invoices-btw_from_constr_in_invoices
+
+                # Creates BTW tax report
+                if total_btw_taxes_to_pay is 0:
+                    TaxReport.objects.create(
+                        company=company,
+                        tax_date=self.date,
+                        type="1",
+                        amount=total_btw_taxes_to_pay,
+                        taxes_paid=True,
+                        taxes_paid_confirmed=True
+                        )
+                else:
+                    TaxReport.objects.create(
+                        company=company,
+                        tax_date=self.date,
+                        type="1",
+                        amount=total_btw_taxes_to_pay,
+                        taxes_paid=False,
+                        taxes_paid_confirmed=False
+                        )
+
+                # Calculations for nature tax from workorders #
+
+                all_work_orders = WorkOrder.objects.filter(
+                    company=company,
+                    date__year=self.report_year,
+                    date__month=self.report_month
+                    )
+                nature_tax_from_wo_dic = all_work_orders.aggregate(Sum('enviroment_tax_on_workorder_total'))
+                nature_tax_from_wo = nature_tax_from_wo_dic['enviroment_tax_on_workorder_total__sum'] or 0
+
+                if nature_tax_from_wo > 0:
+                    TaxReport.objects.create(
+                        company=company,
+                        tax_date=self.date,
+                        type="2",
+                        amount=nature_tax_from_wo,
+                        taxes_paid=False,
+                        taxes_paid_confirmed=False
+                        )
+                
         super().save(*args, **kwargs)

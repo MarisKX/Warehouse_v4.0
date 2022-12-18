@@ -34,11 +34,14 @@ class EmployeesAdmin(admin.TabularInline):
 
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (WarehouseAdmin, EmployeesAdmin)
-    readonly_fields = ('name',)
+    readonly_fields = ('name', 'total_bruto_salaries', 'total_salary_netto', )
     list_display = (
         'full_name',
         'invoice_prefix',
         'registration_number',
+        'total_bruto_salaries',
+        'total_salary_netto',
+
     )
 
     ordering = ('full_name',)

@@ -11,8 +11,9 @@ class TaxReport(models.Model):
     tax_type_choices = [
         ('1', 'BTW'),
         ('2', 'Nature Tax'),
-        ('3', 'Income Tax'),
-        ('4', 'Citizen Taxes'),
+        ('3', 'Company Income Tax'),
+        ('4', 'VSAOI'),
+        ('5', 'Citizen Income Tax'),
     ]
     type = models.CharField(max_length=10, choices=tax_type_choices, default='BTW')
     amount = models.DecimalField(max_digits=6, decimal_places=2, blank=False, null=False, default=0.00)
