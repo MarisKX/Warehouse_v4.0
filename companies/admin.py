@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Company, Warehouse
+from .models import Company, Warehouse, Employees
 
 # Register your models here.
 
@@ -15,8 +15,25 @@ class WarehouseAdmin(admin.TabularInline):
     ordering = ('full_name',)
 
 
+class EmployeesAdmin(admin.TabularInline):
+    model = Employees
+    readonly_fields = (
+        'salary_vsaoi_dd',
+        'salary_vsaoi_dn',
+        'salary_iin',
+        'salary_netto',
+        )
+    list_display = (
+        'company',
+        'name',
+        'salary_brutto'
+    )
+
+    ordering = ('name',)
+
+
 class CompanyAdmin(admin.ModelAdmin):
-    inlines = (WarehouseAdmin, )
+    inlines = (WarehouseAdmin, EmployeesAdmin)
     readonly_fields = ('name',)
     list_display = (
         'full_name',

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.db.models import Sum
+from citizens.models import Citizen
 
 
 # Create your models here.
@@ -56,4 +57,26 @@ class Warehouse(models.Model):
         if it hasn't been set already.
         """
         self.name = self.full_name.replace(" ", "_").lower()
+        super().save(*args, **kwargs)
+
+
+class Employees(models.Model):
+    company = models.ForeignKey(Company, null=True, blank=False, on_delete=models.CASCADE, related_name='employer')
+    name = models.ForeignKey(Citizen, null=True, blank=False, on_delete=models.CASCADE, related_name='employee')
+    role = models.CharField(max_length=254, blank=True, null=True)
+    salary_brutto = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    salary_vsaoi_dd = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    salary_vsaoi_dn = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    salary_iin = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    salary_netto = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        """
+        Override the original save method to set the salary levels
+        if it hasn't been set already.
+        """
+        self.salary_vsaoi_dd = (self.salary_brutto / 100) * 35
+        self.salary_vsaoi_dn = (self.salary_brutto / 100) * 9
+        self.salary_iin = ((self.salary_brutto - self.salary_vsaoi_dn - 100) / 100) * 15
+        self.salary_netto = self.salary_brutto - self.salary_vsaoi_dn - self.salary_iin
         super().save(*args, **kwargs)

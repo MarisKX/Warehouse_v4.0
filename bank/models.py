@@ -1,12 +1,14 @@
 from django.db import models
 from django.db.models import Sum
 from companies.models import Company
+from citizens.models import Citizen
 
 # Create your models here.
 
 
 class BankAccount(models.Model):
-    bank_account_owner = models.ForeignKey(Company, null=False, blank=False, on_delete=models.CASCADE, related_name='bank_account_owner')
+    bank_account_owner_com = models.ForeignKey(Company, null=True, blank=True, on_delete=models.CASCADE, related_name='bank_account_owner_com')
+    bank_account_owner_pp = models.ForeignKey(Citizen, null=True, blank=True, on_delete=models.CASCADE, related_name='bank_account_owner_pp')
     bank_account_number = models.CharField(max_length=18, blank=False, null=False, default="MK84MKCB...", primary_key=True)
     bank_account_saldo = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False, default=0)
 

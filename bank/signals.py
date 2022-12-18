@@ -28,8 +28,8 @@ def create_transaction_entry(sender, instance, **kwargs):
     Update order total on lineitem update/create
     """
     if instance.invoice_paid and instance.invoice_paid_confirmed == False:
-        suplier_bank = get_object_or_404(BankAccount, bank_account_owner=instance.suplier)
-        customer_bank = get_object_or_404(BankAccount, bank_account_owner=instance.customer)
+        suplier_bank = get_object_or_404(BankAccount, bank_account_owner_com=instance.suplier)
+        customer_bank = get_object_or_404(BankAccount, bank_account_owner_com=instance.customer)
         BankAccountEntry.objects.create(
                 bank_account=suplier_bank,
                 description=instance.invoice_number,
@@ -51,13 +51,13 @@ def create_transaction_entry_taxes(sender, instance, **kwargs):
     """
     if instance.taxes_paid and instance.taxes_paid_confirmed is False:
         tax_payer_bank = get_object_or_404(BankAccount,
-                                           bank_account_owner=instance.company
+                                           bank_account_owner_com=instance.company
                                            )
         gov_bank = get_object_or_404(BankAccount,
-                                     bank_account_owner="4750100009"
+                                     bank_account_owner_com="4750100005"
                                      )
         mun_bank = get_object_or_404(BankAccount,
-                                     bank_account_owner="4750100021"
+                                     bank_account_owner_com="4750100021"
                                      )
         
         if instance.type == '4':
@@ -92,7 +92,7 @@ def create_transaction_entry_for_retail_sales(sender, instance, **kwargs):
     Update order total on lineitem update/create
     """
     if instance.retail_sale_paid and instance.retail_sale_paid_confirmed is False:
-        retailer_bank = get_object_or_404(BankAccount, bank_account_owner=instance.retailer)
+        retailer_bank = get_object_or_404(BankAccount, bank_account_owner_com=instance.retailer)
         BankAccountEntry.objects.create(
                 bank_account=retailer_bank,
                 description=instance.retail_sale_number,
@@ -108,8 +108,8 @@ def create_transaction_entry_for_c_invoice(sender, instance, **kwargs):
     Update order total on lineitem update/create
     """
     if instance.c_invoice_paid and instance.c_invoice_paid_confirmed is False:
-        constructor_bank = get_object_or_404(BankAccount, bank_account_owner=instance.constructor)
-        build_customer_bank = get_object_or_404(BankAccount, bank_account_owner=instance.build_customer)
+        constructor_bank = get_object_or_404(BankAccount, bank_account_owner_com=instance.constructor)
+        build_customer_bank = get_object_or_404(BankAccount, bank_account_owner_com=instance.build_customer)
         BankAccountEntry.objects.create(
                 bank_account=constructor_bank,
                 description=instance.c_invoice_number,

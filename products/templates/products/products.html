@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %}All Products{% endblock %}
+
+{% block page_header %}
+    <div class="container header-container">
+        <div class="row">
+            <div class="col"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <h4 class="my-5 mx-5">All Products</h4>  
+    </div>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <form method="GET" action="">
+
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6 offset-md-3 pb-5 pt-5">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Subkategory</th>
+                    <th scope="col">Enviroment Tax</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                    <tr class="table-row-link" onclick="window.location='{% url 'product_details' product.code %}';">
+                        {% if product.image %}
+                            <th scope="row">
+                                <img class="table-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                            </th>
+                        {% else %}
+                            <th scope="row">
+                                <img class="table-image" src="{{ MEDIA_URL }}No-image.png" alt="No Image Available">
+                            </th>
+                        {% endif %}
+                        <td>{{ product.code }}</td>
+                        <td>{{ product.full_name }}</td>
+                        <td>{{ product.category.display_name }}</td>
+                        <td>{{ product.subcategory.display_name }}</td>
+                        {% if product.enviroment_tax %}
+                            <td>{{ product.enviroment_tax_amount }}</td>
+                        {% else %}
+                            <td><i class="fa-solid fa-minus"></i></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+    </div>
+    
+{% endblock %}
+
+{% block postloadjs %}
+    {{ block.super }}
+    <!-- Custom Scripts -->
+    <!-- <script src="{% static 'js/productDetailsHandler.js' %}"></script> -->
+    <!--
+    <script>
+        $(document).ready(function(){
+            $(".accordion-item").click(function(){
+                let list = $(this).children(".accordion-collapse")
+                if (list.hasClass("closed")) {
+                    console.log("clicked");
+                    $.ajax({
+                        url: '',
+                        type: 'get',
+                        data: {
+                            product: $(this).attr("id")
+                        },
+                        success: function(response){
+                            let warehouses = response.warehouses_to_return
+                            $.each(warehouses,function(key, value){
+                                let warehouse = $(list).find(".warehouse")
+                                $(warehouse).append('<li class="warehouse-col-table">' + value + '</li>');
+                            });
+                            let stock = response.stock_to_return
+                            $.each(stock,function(key, value){ 
+                                let stockLevel = $(list).find(".stock_level")
+                                $(stockLevel).append('<li class="warehouse-col-table">' + value + '</li>');
+                            });
+                            let price = response.price_to_return
+                            $.each(price,function(key, value){
+                                let price = $(list).find(".price")
+                                $(price).append('<li class="warehouse-col-table">' + value + ' Eur </li>');
+                            });
+                        }
+                    });
+                    list.removeClass("closed")
+                };    
+            });
+        });
+    </script>
+    -->
+
+{% endblock %}

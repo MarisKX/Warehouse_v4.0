@@ -40,12 +40,16 @@ def create_stockmovement_on_save(sender, instance, created, **kwargs):
         customer_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.invoice.customer)
         try:
             stock_item_suplier = StockItem.objects.get(warehouse=suplier_warehouse, product=instance.product)
+            stock_item_suplier.price = instance.price
+            stock_item_suplier.save()
         except StockItem.DoesNotExist:
             StockItem.objects.create(
                 warehouse=suplier_warehouse,
                 product=instance.product,
             )
         stock_item_suplier = StockItem.objects.get(warehouse=suplier_warehouse, product=instance.product)
+        stock_item_suplier.price = instance.price
+        stock_item_suplier.save()
         StockHistoryEntry.objects.create(
             element=stock_item_suplier,
             doc_nr=instance.invoice.invoice_number,

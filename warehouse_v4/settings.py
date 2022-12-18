@@ -56,6 +56,9 @@ INSTALLED_APPS = [
     'taxes',
     'invoices',
     'bank',
+    'home',
+    'citizens',
+    'reports',
 ]
 
 MIDDLEWARE = [
