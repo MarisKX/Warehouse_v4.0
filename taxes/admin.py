@@ -7,6 +7,7 @@ from .models import TaxReport
 class TaxReportAdmin(admin.ModelAdmin):
     readonly_fields = ('report_number', )
     list_display = (
+        'report_number',
         'company',
         'tax_date',
         'type',

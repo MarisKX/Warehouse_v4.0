@@ -56,22 +56,22 @@ def create_transaction_entry_taxes(sender, instance, **kwargs):
         gov_bank = get_object_or_404(BankAccount,
                                      bank_account_owner_com="4750100005"
                                      )
-        mun_bank = get_object_or_404(BankAccount,
-                                     bank_account_owner_com="4750100021"
-                                     )
+        #mun_bank = get_object_or_404(BankAccount,
+        #                             bank_account_owner_com="4750100021"
+        #                             )
         
-        if instance.type == '4':
+        if instance.type == '2':
             BankAccountEntry.objects.create(
                     bank_account=tax_payer_bank,
                     description=instance.report_number,
                     amount_minus=instance.amount,
                 )
             BankAccountEntry.objects.create(
-                    bank_account=mun_bank,
+                    bank_account=gov_bank,
                     description=instance.report_number,
                     amount_plus=instance.amount,
                 )
-        else:
+        elif instance.type == "1":
             BankAccountEntry.objects.create(
                     bank_account=tax_payer_bank,
                     description=instance.report_number,

@@ -69,19 +69,19 @@ class Report(models.Model):
 
             ##### Calculates and send to bank salaries for period #####
 
-            #for e in all_employees:
-            #    employee_bank = get_object_or_404(BankAccount, bank_account_owner_pp=e.name)
-            #    employer_bank = get_object_or_404(BankAccount, bank_account_owner_com=e.company)
-            #    BankAccountEntry.objects.create(
-            #        bank_account=employee_bank,
-            #        description="Salary " + str(self.report_month) + '/' + str(self.report_year),
-            #        amount_plus=e.salary_netto,
-            #        )
-            #    BankAccountEntry.objects.create(
-            #        bank_account=employer_bank,
-            #        description="Salary " + str(e.name.full_name) + ' - ' + str(self.report_month) + '/' + str(self.report_year),
-            #        amount_minus=e.salary_netto,
-            #        )
+            for e in all_employees:
+                employee_bank = get_object_or_404(BankAccount, bank_account_owner_pp=e.name)
+                employer_bank = get_object_or_404(BankAccount, bank_account_owner_com=e.company)
+                BankAccountEntry.objects.create(
+                    bank_account=employee_bank,
+                    description="Salary " + str(self.report_month) + '/' + str(self.report_year),
+                    amount_plus=e.salary_netto,
+                    )
+                BankAccountEntry.objects.create(
+                    bank_account=employer_bank,
+                    description="Salary " + str(e.name.full_name) + ' - ' + str(self.report_month) + '/' + str(self.report_year),
+                    amount_minus=e.salary_netto,
+                    )
             
             for company in all_companies:
                 company_bank = get_object_or_404(BankAccount, bank_account_owner_com=company)
@@ -89,26 +89,26 @@ class Report(models.Model):
 
                 ##### Employes and their taxes from salary#####
 
-                #BankAccountEntry.objects.create(
-                #    bank_account=gov_bank,
-                #    description="IIN " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
-                #    amount_plus=company.total_salary_iin,
-                #    )
-                #BankAccountEntry.objects.create(
-                #    bank_account=company_bank,
-                #    description="IIN " + str(self.report_month) + '/' + str(self.report_year),
-                #    amount_minus=company.total_salary_iin,
-                #    )
-                #BankAccountEntry.objects.create(
-                #    bank_account=gov_bank,
-                #    description="VSAOI " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
-                #    amount_plus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
-                #    )
-                #BankAccountEntry.objects.create(
-                #    bank_account=company_bank,
-                #    description="VSAOI " + str(self.report_month) + '/' + str(self.report_year),
-                #    amount_minus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
-                #    )
+                BankAccountEntry.objects.create(
+                    bank_account=gov_bank,
+                    description="IIN " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
+                    amount_plus=company.total_salary_iin,
+                    )
+                BankAccountEntry.objects.create(
+                    bank_account=company_bank,
+                    description="IIN " + str(self.report_month) + '/' + str(self.report_year),
+                    amount_minus=company.total_salary_iin,
+                    )
+                BankAccountEntry.objects.create(
+                    bank_account=gov_bank,
+                    description="VSAOI " + str(company.full_name) + str(self.report_month) + '/' + str(self.report_year),
+                    amount_plus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
+                    )
+                BankAccountEntry.objects.create(
+                    bank_account=company_bank,
+                    description="VSAOI " + str(self.report_month) + '/' + str(self.report_year),
+                    amount_minus=company.total_salary_vsaoi_dd + company.total_salary_vsaoi_dn,
+                    )
                 
                 # Creates VSAOI Tax report
 
