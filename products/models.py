@@ -8,14 +8,14 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = 'Categories'
 
-    name = models.CharField(max_length=254)
+    name = models.CharField(max_length=80)
     display_name = models.CharField(max_length=254, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
-    def get_friendly_name(self):
-        return self.friendly_name
+    def get_display_name(self):
+        return self.display_name
 
     def save(self, *args, **kwargs):
         """
@@ -37,8 +37,8 @@ class SubCategory(models.Model):
     def __str__(self):
         return self.name
 
-    def get_friendly_name(self):
-        return self.friendly_name
+    def get_display_name(self):
+        return self.display_name
 
     def save(self, *args, **kwargs):
         """

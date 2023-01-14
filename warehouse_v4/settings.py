@@ -181,4 +181,3 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 FIRST_DAY_OF_WEEK = '1'
-

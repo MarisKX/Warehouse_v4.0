@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+from django.shortcuts import render, get_object_or_404, reverse
+from .models import Product, Category, SubCategory
 from companies.models import Company, Warehouse
 from stock_db.models import StockItem
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from .forms import ProductForm, CategoryForm, SubCategoryForm
 
 
 # Create your views here.
@@ -62,3 +63,48 @@ def product_details(request, code):
     }
 
     return render(request, 'products/product_details.html', context)
+
+
+def add_product(request):
+    """ A view to return the product detail page """
+
+    def is_ajax(request):
+        return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+    company = get_object_or_404(Company, owner=request.user)
+    all_categories = Category.objects.all()
+
+    if is_ajax(request):
+        category = request.GET.get('category')
+        if category is not None:
+            subcategories = SubCategory.objects.filter(category=category).values_list('display_name')
+            return JsonResponse({
+                "subcategories_to_return": list(subcategories),
+                })
+
+    add_cat_form = CategoryForm()
+    add_subcat_form = SubCategoryForm()
+
+    if request.method == "POST":
+        if 'add-category-btn' in request.POST:
+            add_cat_form = CategoryForm(request.POST or None)
+            if add_cat_form.is_valid():
+                obj = add_cat_form.save(commit=False)
+                obj.save()
+                add_cat_form = CategoryForm()
+                return HttpResponseRedirect(reverse("add_product"))
+        elif 'add-subcategory-btn' in request.POST:
+            print("New SubCategory")
+            add_subcat_form = SubCategoryForm(request.POST or None)
+            if add_subcat_form.is_valid():
+                obj = add_subcat_form.save(commit=False)
+                obj.save()
+                add_subcat_form = SubCategoryForm()
+
+    context = {
+        'all_categories': all_categories,
+        'add_category': add_cat_form,
+        'add_subcategory': add_subcat_form
+    }
+
+    return render(request, 'products/add_product.html', context)

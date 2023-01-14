@@ -11,6 +11,19 @@ body {
 
 }
 
+.row {
+    --bs-gutter-x: 0rem;
+}
+
+.form-check {
+    padding-left: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+
 .header-container {
     height: 55px;
 }
@@ -58,3 +71,106 @@ li {
 .table-row-link {
     cursor: pointer;
 }
+
+.general-form {
+    width: 40rem;;
+}
+
+.add-product-input-field {
+    border-radius: 5px !important;
+    border: 1px solid rgb(100,52,41) !important;
+    width: 50%;
+    height: 36px;
+}
+
+.add-product-input-field-sm {
+    border-radius: 5px !important;
+    border: 1px solid rgb(100,52,41) !important;
+    height: 36px;
+    width: 256px;
+}
+
+.add-product-select-field {
+    border-radius: 5px !important;
+    border: 1px solid rgb(100,52,41) !important;
+    height: 36px;
+    padding-left: 10px;
+}
+
+.form-check-input[type=checkbox]:checked {
+    background-image: none;
+    background-color: rgb(100,52,41);
+}
+
+.form-check-input[type=checkbox]:checked:focus {
+    background-color: rgb(100,52,41);
+    box-shadow: 0 0 0 0.25rem rgb(100 52 41 / 30%) !important;
+}
+
+.form-check-input:checked {
+    background-color: rgb(100,52,41);
+    border-color: rgb(100,52,41);
+}
+
+.form-check-input:checked:focus {
+    border-color: rgb(100,52,41);
+    box-shadow: 0 0 0 0.25rem rgb(100 52 41 / 30%) !important;
+}
+
+.form-check-input:focus {
+    border-color: rgb(100,52,41);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(100 52 41 / 25%) !important;
+}
+
+.form-check-input:checked:focus:before {
+    box-shadow: 0 0 0 13px rgb(100,52,41);
+    transform: scale(1.25);
+    transition: box-shadow .4s,transform .4s;
+}
+
+.form-check-input:focus:before {
+    box-shadow: 0 0 0 13px rgb(100,52,41);
+    transform: scale(1.25);
+    transition: box-shadow .4s,transform .4s;
+}
+
+#env_tax {
+    display: inline-block;
+}
+
+.errorlist {
+    color: red !important;
+    font-size: larger;
+}
+
+label {
+    width: 50% !important;
+}
+
+.fa-xmark {
+    color: white;
+}
+
+.fa-plus {
+    color: white;
+}
+
+#toggle_add_category_btn {
+    padding: 2px;
+    padding-top: 3px;
+    border-radius: 50%;
+}
+
+#toggle_add_subcategory_btn {
+    padding: 2px;
+    padding-top: 3px;
+    border-radius: 50%;
+}
+
+legend {
+    margin-bottom: 5rem;
+    padding-left: 2rem;
+    font-size: 2rem;
+}
+
