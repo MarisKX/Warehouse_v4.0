@@ -6,7 +6,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from .forms import ProductForm, CategoryForm, SubCategoryForm
 
 
-# Create your views here.
+# All Products view
 def all_products(request):
     """ A view to show all products, including sorting and search queries """
 
@@ -18,6 +18,7 @@ def all_products(request):
     all_warehouses = Warehouse.objects.all()
     all_stock_items = StockItem.objects.all()
     all_companies = Company.objects.all()
+    all_companies_with_stock = Company.objects.filter(warehouse=True)
 
     categories = None
     company = get_object_or_404(Company, owner=request.user)
@@ -46,6 +47,7 @@ def all_products(request):
         'all_warehouses': all_warehouses,
         'all_stock_items': all_stock_items,
         'company': company,
+        'all_companies_with_stock': all_companies_with_stock
     }
 
     return render(request, 'products/products.html', context)
@@ -65,12 +67,14 @@ def product_details(request, code):
     return render(request, 'products/product_details.html', context)
 
 
+# Add New Product view
 def add_product(request):
     """ A view to return the product detail page """
 
     def is_ajax(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+    all_companies_with_stock = Company.objects.filter(warehouse=True)
     company = get_object_or_404(Company, owner=request.user)
     all_categories = Category.objects.all()
 
@@ -124,6 +128,29 @@ def add_product(request):
         'add_category': add_cat_form,
         'add_subcategory': add_subcat_form,
         'add_product': add_product_form,
+        'all_companies_with_stock': all_companies_with_stock,
     }
 
     return render(request, 'products/add_product.html', context)
+
+
+# Edit Product view (coming soon)
+
+# Stock Level view
+def stock_level(request):
+    """ A view to return the product detail page """
+
+    def is_ajax(request):
+        return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+    company = get_object_or_404(Company, owner=request.user)
+    all_companies_with_stock = Company.objects.filter(warehouse=True)
+    stock_items = StockItem.objects.all().order_by('warehouse')
+    print(stock_items)
+
+    context = {
+        'all_companies_with_stock': all_companies_with_stock,
+        'stock_items': stock_items,
+    }
+
+    return render(request, 'products/stock_level.html', context)

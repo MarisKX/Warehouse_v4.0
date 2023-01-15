@@ -3,6 +3,9 @@ $(document).ready(function(){
         if (initList[0].hasChildNodes()) {
             initList.empty();
     };
+    let envTaxField = $("#id_enviroment_tax_amount")
+        envTaxField.addClass('hidden');
+        envTaxField.prev('label').addClass('hidden');
     $(document.body).on('change',"#id_category",function(){ // Used for system generated code
         let value = $(this).val()
         let list = $("#id_subcategory")
@@ -30,11 +33,13 @@ $(document).ready(function(){
             }
         });   
     });
-    $("#enviroment_tax").change(function(){
-        if ($("#enviroment_tax").is(':checked')) {
-            $('.env-tax-input-field').removeClass("hidden")
+    $("#id_enviroment_tax").change(function(){
+        if ($("#id_enviroment_tax").is(':checked')) {
+            $('#id_enviroment_tax_amount').removeClass("hidden")
+            $('#id_enviroment_tax_amount').prev('label').removeClass('hidden');
         } else {
-            $('.env-tax-input-field').addClass("hidden")
+            $('#id_enviroment_tax_amount').addClass("hidden")
+            $('#id_enviroment_tax_amount').prev('label').addClass('hidden');
         }
     });
     $("#toggle_add_category_btn").click(function(){

@@ -27,17 +27,30 @@
         </li>
 
         <li class="list-inline-item dropdown">
-          <button class="btn btn-secondary bg-green" id="products" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-secondary bg-green" id="dropdownMenuButton"
+          data-mdb-toggle="dropdown" aria-expanded="false">
             Products
           </button>
           <ul class="dropdown-menu" aria-labelledby="products">
             <li><a class="dropdown-item" href="{% url 'add_product' %}">Add New Product</a></li>
             <li><a class="dropdown-item" href="{% url 'products' %}">All Products</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Add New category</a></li>
-            <li><a class="dropdown-item" href="#">All Categories</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Stock Level</a></li>
+            <li>
+              <a class="dropdown-item" href="#">
+                Stock Level <span> > </span>
+              </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <a class="dropdown-item" href="{% url 'stock_level' %}">All Stock Levels</a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                {% for c in all_companies_with_stock %}
+                  <li>
+                    <a class="dropdown-item" href="#">{{ c.full_name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Recepies</a></li>
           </ul>
@@ -65,6 +78,7 @@
             <li><a class="dropdown-item" href="#">Equipment</a></li>
           </ul>
         </li>
+        
         {% if request.user.is_superuser %}
         <li class="list-inline-item dropdown">
             <button class="btn btn-secondary bg-green" id="properties" data-bs-toggle="dropdown" aria-expanded="false">

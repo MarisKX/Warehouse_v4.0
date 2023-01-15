@@ -14,6 +14,7 @@ class Company(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=254, blank=True, null=True)
     full_name = models.CharField(max_length=254, blank=True)
+    warehouse = models.BooleanField(default=False)
     registration_number = models.PositiveIntegerField(blank=True, primary_key=True, default=1)
     invoice_prefix = models.CharField(max_length=2, blank=False, unique=True)
     street_adress_1 = models.IntegerField(default=0, blank=True)

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %}Stock Levels - All{% endblock %}
+
+{% block page_header %}
+    <div class="container header-container">
+        <div class="row">
+            <div class="col"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <h4 class="my-5 mx-5">Stock Levels - All</h4>  
+    </div>
+    <div class="row">
+        <div class="col-8 offset-2 p-3 justify-content-center pb-4">
+
+            {% for stock_item in stock_items %}
+                <div class="row stock-list-expand" id="{{ stock_item.id }}">
+                    <h3 class="col-3">{{ stock_item.warehouse.warehouse_owner.full_name }}</h3>
+                    <h4 class="col-3">{{ stock_item.product.full_name }}</h4>
+                    <div class="col-1"><i class="fa-solid fa-chevrons-down"></i></div>
+                    <div class="col-5"></div>
+                    <hr>
+                </div>
+                <div class="row stock-list-container">
+                    
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="col-md-6 offset-md-3 pb-5 pt-5">
+    </div>
+
+{% endblock %}
+
+{% block postloadjs %}
+    {{ block.super }}
+    <!-- Custom Scripts -->
+    <script>
+
+    </script>
+
+{% endblock %}

@@ -39,6 +39,7 @@ class CompanyAdmin(admin.ModelAdmin):
         'full_name',
         'invoice_prefix',
         'registration_number',
+        'warehouse',
         'total_bruto_salaries',
         'total_salary_netto',
 
