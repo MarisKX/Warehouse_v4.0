@@ -18,10 +18,8 @@ def all_products(request):
     all_warehouses = Warehouse.objects.all()
     all_stock_items = StockItem.objects.all()
     all_companies = Company.objects.all()
-    all_companies_with_stock = Company.objects.filter(warehouse=True)
 
     categories = None
-    company = get_object_or_404(Company, owner=request.user)
 
     if request.GET:
         if 'category' in request.GET:
@@ -46,8 +44,6 @@ def all_products(request):
         'all_categories': all_categories,
         'all_warehouses': all_warehouses,
         'all_stock_items': all_stock_items,
-        'company': company,
-        'all_companies_with_stock': all_companies_with_stock
     }
 
     return render(request, 'products/products.html', context)
@@ -57,7 +53,6 @@ def product_details(request, code):
     """ A view to return the product detail page """
 
     product = get_object_or_404(Product, code=code)
-    company = get_object_or_404(Company, owner=request.user)
 
     context = {
         'product': product,
@@ -74,8 +69,6 @@ def add_product(request):
     def is_ajax(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-    all_companies_with_stock = Company.objects.filter(warehouse=True)
-    company = get_object_or_404(Company, owner=request.user)
     all_categories = Category.objects.all()
 
     if is_ajax(request):
@@ -128,7 +121,6 @@ def add_product(request):
         'add_category': add_cat_form,
         'add_subcategory': add_subcat_form,
         'add_product': add_product_form,
-        'all_companies_with_stock': all_companies_with_stock,
     }
 
     return render(request, 'products/add_product.html', context)
@@ -143,14 +135,30 @@ def stock_level(request):
     def is_ajax(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-    company = get_object_or_404(Company, owner=request.user)
-    all_companies_with_stock = Company.objects.filter(warehouse=True)
     stock_items = StockItem.objects.all().order_by('warehouse')
     print(stock_items)
 
     context = {
-        'all_companies_with_stock': all_companies_with_stock,
         'stock_items': stock_items,
     }
 
     return render(request, 'products/stock_level.html', context)
+
+
+# Stock Level view for company
+def stock_level_company_level(request, registration_number):
+    """ A view to return the product detail page """
+
+    def is_ajax(request):
+        return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+    company_to_display = get_object_or_404(Company, registration_number=registration_number)
+    company_warehouse = get_object_or_404(Warehouse, warehouse_owner=company_to_display)
+    stock_items = StockItem.objects.filter(warehouse=company_warehouse)
+
+    context = {
+        'company_to_display': company_to_display,
+        'stock_items': stock_items
+    }
+
+    return render(request, 'products/stock_level_company_level.html', context)

@@ -46,7 +46,7 @@
                 <li><hr class="dropdown-divider"></li>
                 {% for c in all_companies_with_stock %}
                   <li>
-                    <a class="dropdown-item" href="#">{{ c.full_name }}</a>
+                    <a id="{{ c.registration_number }}" class="dropdown-item" href="{% url 'stock_level_company_level' c.registration_number %}">{{ c.full_name }}</a>
                   </li>
                 {% endfor %}
               </ul>
