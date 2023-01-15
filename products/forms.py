@@ -32,7 +32,7 @@ class SubCategoryForm(forms.ModelForm):
         model = SubCategory
         fields = [
             'category',
-            'display_name'
+            'display_name',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -46,8 +46,28 @@ class SubCategoryForm(forms.ModelForm):
             field.widget.attrs['class'] = 'select select-category col-6 add-product-select-field mb-4'
 
 
-class ProductForm(forms.Form):
-    category = Category.objects.all()
-    subcategory = SubCategory.objects.all()
-    full_name = forms.CharField()
-    enviroment_tax_amount = forms.DecimalField()
+class ProductForm(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = [
+            'category',
+            'subcategory',
+            'full_name',
+            'name',
+            'code',
+            'enviroment_tax',
+            'enviroment_tax_amount',
+            'image',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        categories = Category.objects.all()
+        display_name_categories = [(c.id, c.get_display_name()) for c in categories]
+        self.fields['category'].choices = display_name_categories
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'select col-6 add-product-select-field mb-4'
+

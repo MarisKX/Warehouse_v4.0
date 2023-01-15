@@ -1,24 +1,34 @@
 $(document).ready(function(){
-    $(".select-category").change(function(){
+    let initList = $("#id_subcategory")
+        if (initList[0].hasChildNodes()) {
+            initList.empty();
+    };
+    $(document.body).on('change',"#id_category",function(){ // Used for system generated code
         let value = $(this).val()
-        console.log(value);
-        let list = $(".select-subcategory")
+        let list = $("#id_subcategory")
         if (list[0].hasChildNodes()) {
-            list.empty();
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    category: value
-                },
-                success: function(response){
-                    let subcategories = response.subcategories_to_return
-                    $.each(subcategories,function(key, value){ 
-                    $(".select-subcategory").append('<option class="subcategory-value">' + value + '</option>');
-                    });
-                }
-            });
-        };    
+            list.empty()
+        };
+        $.ajax({
+            url: '',
+            type: 'get',
+            data: {
+                category: value
+            },
+            success: function(response){
+                console.log(response)
+                let subcategories = response.subcategories_to_return
+                let subcategories_id = response.subcategories_id_to_return
+                $.each(subcategories,function(key, value){
+                    $("#id_subcategory").append('<option class="subcategory-value">' + value + '</option>');
+                });
+                let count = 0
+                $.each(subcategories_id,function(key, value){
+                    $(".subcategory-value").eq(count).attr('value', value);
+                    count +=1
+                });
+            }
+        });   
     });
     $("#enviroment_tax").change(function(){
         if ($("#enviroment_tax").is(':checked')) {

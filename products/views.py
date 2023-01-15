@@ -78,33 +78,52 @@ def add_product(request):
         category = request.GET.get('category')
         if category is not None:
             subcategories = SubCategory.objects.filter(category=category).values_list('display_name')
+            subcategories_id = SubCategory.objects.filter(category=category).values_list('id')
+            print(subcategories_id, subcategories)
             return JsonResponse({
                 "subcategories_to_return": list(subcategories),
+                "subcategories_id_to_return": list(subcategories_id),
                 })
 
     add_cat_form = CategoryForm()
     add_subcat_form = SubCategoryForm()
+    add_product_form = ProductForm()
+    name_field = add_product_form.fields['name']
+    name_field.widget = name_field.hidden_widget()
+    code_field = add_product_form.fields['code']
+    code_field.widget = code_field.hidden_widget()
 
     if request.method == "POST":
         if 'add-category-btn' in request.POST:
             add_cat_form = CategoryForm(request.POST or None)
             if add_cat_form.is_valid():
                 obj = add_cat_form.save(commit=False)
+                print(obj)
                 obj.save()
                 add_cat_form = CategoryForm()
                 return HttpResponseRedirect(reverse("add_product"))
         elif 'add-subcategory-btn' in request.POST:
-            print("New SubCategory")
             add_subcat_form = SubCategoryForm(request.POST or None)
             if add_subcat_form.is_valid():
                 obj = add_subcat_form.save(commit=False)
                 obj.save()
                 add_subcat_form = SubCategoryForm()
+        elif 'add-product-btn' in request.POST:
+            add_product_form = ProductForm(request.POST or None, request.FILES)
+            if add_product_form.is_valid():
+                obj = add_product_form.save(commit=False)
+                obj.save()
+                add_product_form = ProductForm()
+                name_field = add_product_form.fields['name']
+                name_field.widget = name_field.hidden_widget()
+                code_field = add_product_form.fields['code']
+                code_field.widget = code_field.hidden_widget()
 
     context = {
         'all_categories': all_categories,
         'add_category': add_cat_form,
-        'add_subcategory': add_subcat_form
+        'add_subcategory': add_subcat_form,
+        'add_product': add_product_form,
     }
 
     return render(request, 'products/add_product.html', context)

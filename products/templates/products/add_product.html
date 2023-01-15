@@ -50,10 +50,16 @@
             </form>
         </div>
         <div class="col-8 offset-2 p-4 d-flex justify-content-center pb-4">
-                <form method="POST" action="." class="general-form" id="subcategory-form" >
+                <form method="POST" action="." class="general-form" id="product-form" accept-charset="utf-8" enctype="multipart/form-data">
                     {% csrf_token %}
                     <legend>Add New Product</legend>
-                    <!-- Category Input -->
+                    <!-- Name input -->
+                    <div class="form-outline mb-4 row category-input-wrap">
+                        {{ add_product }}
+                    </div>
+                    <!-- 
+                    <legend>Add New Product</legend>
+
                     <div class="form-outline mb-4 row">
                         <label class="form-label col-6 text-green" for="category">Product Category</label>
                         <select id="category" class="select select-category col-6 add-product-select-field" name="category">
@@ -63,19 +69,19 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <!-- Subcategory Input -->
+
                     <div class="form-outline mb-4 row">
                         <label class="form-label col-6 text-green" for="form2Example1">Product Subcategory</label>
                         <select class="select select-subcategory col-6 add-product-select-field" name="subcategory">
                             <option value="" disabled selected hidden>Select Subcategory...</option>
                         </select>
                     </div>
-                    <!-- Name input -->
+
                     <div class="form-outline mb-4 row">
                         <label class="form-label col-6 text-green" for="name">Full Name</label>
                         <input type="text" id="name" class="form-control col-6 add-product-input-field" name="full_name"/>
                     </div>
-                    <!-- Checkbox -->
+
                     <div class="form-check d-flex mb-4 row">
                         <div class="col-6 p-2">
                             <label class="form-check-label text-green" for="env_tax">Enviroment Tax</label>
@@ -93,6 +99,7 @@
                                 value="0.00"/>
                         </div>
                     </div>
+                    -->
 
                     <!-- Submit button -->
                     <div class="form-outline mb-4 row">
