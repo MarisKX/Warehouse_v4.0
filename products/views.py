@@ -56,7 +56,6 @@ def product_details(request, code):
 
     context = {
         'product': product,
-        'company': company,
     }
 
     return render(request, 'products/product_details.html', context)

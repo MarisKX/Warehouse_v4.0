@@ -7,5 +7,5 @@ def extras(request):
     all_companies_with_stock = Company.objects.filter(warehouse=True)
     return {
         'company': company,
-        'all_companies_with_stock': all_companies_with_stock
+        'all_companies_with_stock': all_companies_with_stock,
     }
