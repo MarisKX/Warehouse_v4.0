@@ -32,6 +32,9 @@ body {
     color: rgb(117,175,74) !important;
 }
 
+.text-red {
+    color: red;
+}
 
 .text-brown {
     color: rgb(100,52,41) !important;

@@ -172,16 +172,24 @@ def stock_level_company_level(request, registration_number):
             stock_item_to_return = StockItem.objects.filter(
                 warehouse=warehouse_id, quantity__gt=QUANTITY_LIMIT)
             if stock_item_to_return.count() > 0:
-                stock_items_to_return_name = stock_item_to_return.values_list("product__full_name")
-                stock_items_to_return_quantity = stock_item_to_return.values_list("quantity")
-                stock_items_to_return_price = stock_item_to_return.values_list("price")
-                stock_items_to_return_value = stock_item_to_return.values_list("value")
+                stock_items_to_return_name = (
+                    stock_item_to_return.values_list("product__full_name"))
+                stock_items_to_return_quantity = (
+                    stock_item_to_return.values_list("quantity"))
+                stock_items_to_return_price = (
+                    stock_item_to_return.values_list("price"))
+                stock_items_to_return_value = (
+                    stock_item_to_return.values_list("value"))
 
                 return JsonResponse({
-                    "stock_items_to_return_name": list(stock_items_to_return_name),
-                    "stock_items_to_return_quantity": list(stock_items_to_return_quantity),
-                    "stock_items_to_return_price": list(stock_items_to_return_price),
-                    "stock_items_to_return_value": list(stock_items_to_return_value),
+                    "stock_items_to_return_name": list(
+                        stock_items_to_return_name),
+                    "stock_items_to_return_quantity": list(
+                        stock_items_to_return_quantity),
+                    "stock_items_to_return_price": list(
+                        stock_items_to_return_price),
+                    "stock_items_to_return_value": list(
+                        stock_items_to_return_value),
                 })
             else:
                 stock_items_to_return_name = "No Entries To Display"

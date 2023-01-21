@@ -23,12 +23,23 @@
                     {% if stock_item.quantity > 0 %}
                         <div class="row stock-list-expand" id="{{ stock_item.id }}">
                             <div class="col-3">{{ stock_item.warehouse.warehouse_owner.full_name }}</div>
-                            <div  onclick="window.location='{% url 'stock_level_company_level' stock_item.warehouse.warehouse_owner.registration_number %}';" 
-                                class="col-3">{{ stock_item.product.full_name }}
+                            <div 
+                                class="col-3"
+                                onclick="window.location='{% url 'stock_level_company_level' stock_item.warehouse.warehouse_owner.registration_number %}';">
+                                {{ stock_item.warehouse.full_name }}
                             </div>
-                            <div class="col-2">{{ stock_item.quantity }}</div>
-                            <div class="col-2">{{ stock_item.price }}</div>
-                            <div class="col-2">{{ stock_item.value }}</div>
+                            <div 
+                                class="col-3"
+                                onclick="window.location='{% url 'product_details' stock_item.product.code %}';">
+                                {{ stock_item.product.full_name }}
+                            </div>
+                            <div 
+                                class="col-1"
+                                onclick="window.location='{% url 'stock_level_company_level' stock_item.warehouse.warehouse_owner.registration_number %}';">
+                                {{ stock_item.quantity }}
+                            </div>
+                            <div class="col-1">{{ stock_item.price }}</div>
+                            <div class="col-1">{{ stock_item.value }}</div>
                             <hr>
                         </div>
                     {% endif %}
