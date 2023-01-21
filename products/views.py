@@ -165,6 +165,22 @@ def stock_level_company_level(request, registration_number):
 
     # stock_items = StockItem.objects.filter(queries)
 
+    if is_ajax(request):
+        warehouse_id = request.GET.get('warehouseId')
+        QUANTITY_LIMIT = 0
+        if warehouse_id is not None:
+            stock_items_to_return_name = StockItem.objects.filter(
+                warehouse=warehouse_id, quantity__gt=QUANTITY_LIMIT).values_list("product__full_name")
+            stock_items_to_return_quantity = StockItem.objects.filter(
+                warehouse=warehouse_id, quantity__gt=QUANTITY_LIMIT).values_list("quantity")
+            stock_items_to_return_price = StockItem.objects.filter(
+                warehouse=warehouse_id, quantity__gt=QUANTITY_LIMIT).values_list("price")
+            return JsonResponse({
+                "stock_items_to_return_name": list(stock_items_to_return_name),
+                "stock_items_to_return_quantity": list(stock_items_to_return_quantity),
+                "stock_items_to_return_price": list(stock_items_to_return_price),
+                })
+
     context = {
         'company_to_display': company_to_display,
         'warehouses': warehouses
