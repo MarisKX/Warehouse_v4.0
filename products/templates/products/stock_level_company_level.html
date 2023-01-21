@@ -13,12 +13,25 @@
 
 {% block content %}
     <div class="main-content">
-        <h4 class="my-5 mx-5">Stock Levels - {{ company_to_display.full_name }}</h4>  
+        <h4 class="my-5 mx-5">Stock Levels - {{ company_to_display.full_name }} - All Warehouses</h4>  
     </div>
     <div class="row">
         <div class="col-8 offset-2 p-3 justify-content-center pb-4">
             
-
+            {% for warehouse in warehouses %}
+                <div class="row stock-list-expand" id="{{ warehouse.id }}">
+                    <div class="col-5 m-2">
+                        <h4>{{ warehouse.full_name }}</h4>
+                    </div>
+                    {% if warehouse.internal_warehouse == False %}
+                        <div class="col-3 m-2">Public</div>
+                    {% else %}
+                        <div class="col-3 m-2">Internal</div>
+                    {% endif %}
+                </div>
+                <hr>
+                
+            {% endfor %}
 
         </div>
     </div>

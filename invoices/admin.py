@@ -35,7 +35,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         'invoice_paid_confirmed',
         'amount_total',
         'btw_total',
-        'amount_total_with_btw', 
+        'amount_total_with_btw',
     )
     ordering = ('date', 'id',)
 
@@ -80,7 +80,12 @@ class RetailSaleItemAdmin(admin.TabularInline):
 
 class RetailSaleAdmin(admin.ModelAdmin):
     inlines = (RetailSaleItemAdmin,)
-    readonly_fields = ('retail_sale_number', 'amount_total', 'btw_total', 'amount_total_with_btw',)
+    readonly_fields = (
+        'retail_sale_number',
+        'amount_total',
+        'btw_total',
+        'amount_total_with_btw',
+    )
     list_display = (
         'retail_sale_number',
         'retailer',
@@ -88,23 +93,34 @@ class RetailSaleAdmin(admin.ModelAdmin):
         'date',
         'amount_total',
         'btw_total',
-        'amount_total_with_btw', 
+        'amount_total_with_btw',
     )
     ordering = ('date', 'retail_sale_number',)
 
 
 class ConstructionInvoiceItemAdmin(admin.TabularInline):
     model = ConstructionInvoiceItem
-    readonly_fields = ('constructionitem_total', 'btw', 'constructionitem_total_with_btw',)
+    readonly_fields = (
+        'constructionitem_total',
+        'btw',
+        'constructionitem_total_with_btw',
+    )
 
 
 class ConstructionInvoiceLabourCostsAdmin(admin.TabularInline):
     model = ConstructionInvoiceLabourCosts
-    readonly_fields = ('construction_labour_item_total', 'btw', 'construction_labour_item_total_with_btw',)
+    readonly_fields = (
+        'construction_labour_item_total',
+        'btw',
+        'construction_labour_item_total_with_btw',
+    )
 
 
 class ConstructionInvoiceAdmin(admin.ModelAdmin):
-    inlines = (ConstructionInvoiceItemAdmin, ConstructionInvoiceLabourCostsAdmin,)
+    inlines = (
+        ConstructionInvoiceItemAdmin,
+        ConstructionInvoiceLabourCostsAdmin,
+    )
     readonly_fields = ('amount_total', 'btw_total', 'amount_total_with_btw',)
     list_display = (
         'c_invoice_number',
@@ -116,7 +132,7 @@ class ConstructionInvoiceAdmin(admin.ModelAdmin):
         'c_invoice_paid_confirmed',
         'amount_total',
         'btw_total',
-        'amount_total_with_btw', 
+        'amount_total_with_btw',
     )
     ordering = ('date', 'c_invoice_number',)
 

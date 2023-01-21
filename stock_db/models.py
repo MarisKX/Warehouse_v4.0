@@ -11,11 +11,16 @@ class StockItem(models.Model):
     class Meta:
         verbose_name_plural = 'Stock Movements'
 
-    warehouse = models.ForeignKey(Warehouse, null=False, blank=False, on_delete=models.CASCADE, related_name='item_location')
-    product = models.ForeignKey(Product, null=False, blank=False, on_delete=models.CASCADE)
+    warehouse = models.ForeignKey(
+        Warehouse, null=False, blank=False,
+        on_delete=models.CASCADE, related_name='item_location')
+    product = models.ForeignKey(
+        Product, null=False, blank=False, on_delete=models.CASCADE)
     quantity = models.IntegerField(null=False, blank=False, default=0)
-    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, blank=False)
-    value = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    price = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0.00, blank=False)
+    value = models.DecimalField(
+        max_digits=6, decimal_places=2, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         """
@@ -38,7 +43,9 @@ class StockItem(models.Model):
 
 
 class StockHistoryEntry(models.Model):
-    element = models.ForeignKey('StockItem', null=False, blank=False, on_delete=models.CASCADE, related_name='element')
+    element = models.ForeignKey(
+        'StockItem', null=False, blank=False,
+        on_delete=models.CASCADE, related_name='element')
     doc_nr = models.CharField(max_length=254, blank=True, null=True)
     quantity_plus = models.IntegerField(null=True, blank=True, default=0)
     quantity_minus = models.IntegerField(null=True, blank=True, default=0)

@@ -31,9 +31,12 @@ def all_products(request):
     if is_ajax(request):
         product_code = request.GET.get('product')
         product = get_object_or_404(Product, code=product_code)
-        warehouse_list = StockItem.objects.filter(product=product).values_list('warehouse__full_name')
-        stock_list = StockItem.objects.filter(product=product).values_list('quantity')
-        price_list = StockItem.objects.filter(product=product).values_list('price')
+        warehouse_list = StockItem.objects.filter(
+            product=product).values_list('warehouse__full_name')
+        stock_list = StockItem.objects.filter(
+            product=product).values_list('quantity')
+        price_list = StockItem.objects.filter(
+            product=product).values_list('price')
         return JsonResponse({
             "warehouses_to_return": list(warehouse_list),
             "stock_to_return": list(stock_list),
@@ -74,8 +77,10 @@ def add_product(request):
     if is_ajax(request):
         category = request.GET.get('category')
         if category is not None:
-            subcategories = SubCategory.objects.filter(category=category).values_list('display_name')
-            subcategories_id = SubCategory.objects.filter(category=category).values_list('id')
+            subcategories = SubCategory.objects.filter(
+                category=category).values_list('display_name')
+            subcategories_id = SubCategory.objects.filter(
+                category=category).values_list('id')
             print(subcategories_id, subcategories)
             return JsonResponse({
                 "subcategories_to_return": list(subcategories),
@@ -152,14 +157,17 @@ def stock_level_company_level(request, registration_number):
     def is_ajax(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-    company_to_display = get_object_or_404(Company, registration_number=registration_number)
-    queries = Q(warehouse__name__icontains=company_to_display)
+    company_to_display = get_object_or_404(
+        Company, registration_number=registration_number)
+    warehouses = Warehouse.objects.filter(
+        warehouse_owner=company_to_display)
+    # queries = Q(warehouse__name__icontains=company_to_display)
 
-    stock_items = StockItem.objects.filter(queries)
+    # stock_items = StockItem.objects.filter(queries)
 
     context = {
         'company_to_display': company_to_display,
-        'stock_items': stock_items
+        'warehouses': warehouses
     }
 
     return render(request, 'products/stock_level_company_level.html', context)
