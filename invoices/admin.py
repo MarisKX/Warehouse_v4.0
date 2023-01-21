@@ -10,6 +10,8 @@ from .models import (
     ConstructionInvoice,
     ConstructionInvoiceItem,
     ConstructionInvoiceLabourCosts,
+    TransferOrder,
+    TransferOrderItem
 )
 
 # Register your models here.
@@ -119,7 +121,31 @@ class ConstructionInvoiceAdmin(admin.ModelAdmin):
     ordering = ('date', 'c_invoice_number',)
 
 
+class TransferOrderItemAdmin(admin.TabularInline):
+    model = TransferOrderItem
+    list_display = (
+        'product',
+        'quantity',
+    )
+
+
+class TransferOrderAdmin(admin.ModelAdmin):
+    inlines = (TransferOrderItemAdmin, )
+    readonly_fields = (
+        'to_number',
+    )
+    list_display = (
+        'to_number',
+        'company',
+        'warehouse_from',
+        'warehouse_to',
+        'date',
+    )
+    ordering = ('date', 'to_number',)
+
+
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(WorkOrder, WorkOrderAdmin)
 admin.site.register(RetailSale, RetailSaleAdmin)
 admin.site.register(ConstructionInvoice, ConstructionInvoiceAdmin)
+admin.site.register(TransferOrder, TransferOrderAdmin)

@@ -4,6 +4,7 @@ from companies.models import Company, Warehouse
 from stock_db.models import StockItem
 from django.http import JsonResponse, HttpResponseRedirect
 from .forms import ProductForm, CategoryForm, SubCategoryForm
+from django.db.models import Q
 
 
 # All Products view
@@ -152,8 +153,9 @@ def stock_level_company_level(request, registration_number):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
     company_to_display = get_object_or_404(Company, registration_number=registration_number)
-    company_warehouse = get_object_or_404(Warehouse, warehouse_owner=company_to_display)
-    stock_items = StockItem.objects.filter(warehouse=company_warehouse)
+    queries = Q(warehouse__name__icontains=company_to_display)
+
+    stock_items = StockItem.objects.filter(queries)
 
     context = {
         'company_to_display': company_to_display,

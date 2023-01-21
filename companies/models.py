@@ -65,6 +65,7 @@ class Warehouse(models.Model):
     warehouse_owner = models.ForeignKey(Company, null=True, blank=False, on_delete=models.CASCADE, related_name='warehouse_owner')
     name = models.CharField(max_length=254, blank=True, null=True)
     full_name = models.CharField(max_length=254, blank=True)
+    internal_warehouse = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

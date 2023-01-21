@@ -11,7 +11,9 @@ from companies.models import Company, Warehouse
 class Invoice(models.Model):
     invoice_number = models.CharField(max_length=8, default='AA00001')
     suplier = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="suplier")
+    suplier_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="suplier_warehouse")
     customer = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="customer")
+    customer_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="customer_warehouse")
     date = models.DateField(auto_now_add=False)
     payment_term_choices = [
         ('7', '7 days'),
@@ -20,6 +22,7 @@ class Invoice(models.Model):
         ('30', '30 days'),
         ('60', '60 days'),
     ]
+
     payment_term = models.CharField(max_length=10, choices=payment_term_choices, default='14')
     invoice_paid = models.BooleanField()
     invoice_paid_confirmed = models.BooleanField()
@@ -105,6 +108,7 @@ class WorkOrderItemProduction(models.Model):
 class RetailSale(models.Model):
     retail_sale_number = models.CharField(max_length=12, default='RT1')
     retailer = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="retailer")
+    retailer_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="retailer_warehouse")
     customer_city = models.CharField(max_length=56)
     date = models.DateField(auto_now_add=False)
     retail_sale_paid = models.BooleanField()
@@ -150,6 +154,7 @@ class RetailSaleItem(models.Model):
 class ConstructionInvoice(models.Model):
     c_invoice_number = models.CharField(max_length=12, default='C1')
     constructor = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="constructor")
+    constructor_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="constructor_warehouse")
     build_customer = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="build_customer")
     date = models.DateField(auto_now_add=False)
     payment_term_choices = [
@@ -233,3 +238,20 @@ class ConstructionInvoiceLabourCosts(models.Model):
         self.btw = (self.construction_labour_item_total / 100) * 21
         self.construction_labour_item_total_with_btw = self.construction_labour_item_total + self.btw
         super().save(*args, **kwargs)
+
+
+class TransferOrder(models.Model):
+    to_number = models.CharField(max_length=10, default='TO00001')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="company_transfer_order")
+    warehouse_from = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="transfer_order_from_warehouse")
+    warehouse_to = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="transfer_order_to_warehouse")
+    date = models.DateField(auto_now_add=False)
+
+    def __str__(self):
+        return self.to_number
+
+
+class TransferOrderItem(models.Model):
+    to_number = models.ForeignKey(TransferOrder, null=False, blank=False, on_delete=models.CASCADE, related_name='product_transfer_order_from')
+    product = models.ForeignKey(Product, null=False, blank=False, on_delete=models.CASCADE, related_name='product_with_to')
+    quantity = models.IntegerField(null=False, blank=False, default=0)

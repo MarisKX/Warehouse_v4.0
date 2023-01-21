@@ -10,7 +10,9 @@ from invoices.models import (
     WorkOrderItemProduction,
     RetailSaleItem,
     ConstructionInvoice,
-    ConstructionInvoiceItem
+    ConstructionInvoiceItem,
+    TransferOrder,
+    TransferOrderItem
 )
 
 
@@ -36,8 +38,8 @@ def create_stockmovement_on_save(sender, instance, created, **kwargs):
     Update order total on lineitem update/create
     """
     if created:
-        suplier_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.invoice.suplier)
-        customer_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.invoice.customer)
+        suplier_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.invoice.suplier_warehouse)
+        customer_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.invoice.customer_warehouse)
         try:
             stock_item_suplier = StockItem.objects.get(warehouse=suplier_warehouse, product=instance.product)
             stock_item_suplier.price = instance.price
@@ -114,13 +116,50 @@ def create_prod_stock_movement_on_work_order_save(sender, instance, created, **k
         )
 
 
+@receiver(post_save, sender=TransferOrderItem)
+def create_prod_stock_movement_on_transfer_order_save(sender, instance, created, **kwargs):
+    """
+    Update order total on lineitem update/create
+    """
+    if created:
+        warehouse_from = get_object_or_404(Warehouse, name=instance.to_number.warehouse_from.name)
+        print(warehouse_from)
+        warehouse_to = get_object_or_404(Warehouse, name=instance.to_number.warehouse_to.name)
+        try:
+            warehouse_from_stock_item = StockItem.objects.get(warehouse=warehouse_from, product=instance.product)
+        except StockItem.DoesNotExist:
+            StockItem.objects.create(
+                warehouse=warehouse_from_stock_item,
+                product=instance.product,
+            )
+        warehouse_from_stock_item = StockItem.objects.get(warehouse=warehouse_from, product=instance.product)
+        StockHistoryEntry.objects.create(
+            element=warehouse_from_stock_item,
+            doc_nr=instance.to_number.to_number,
+            quantity_minus=instance.quantity
+        )
+        try:
+            warehouse_to_stock_item = StockItem.objects.get(warehouse=warehouse_to, product=instance.product)
+        except StockItem.DoesNotExist:
+            StockItem.objects.create(
+                warehouse=warehouse_to,
+                product=instance.product,
+            )
+        warehouse_to_stock_item = StockItem.objects.get(warehouse=warehouse_to, product=instance.product)
+        StockHistoryEntry.objects.create(
+            element=warehouse_to_stock_item,
+            doc_nr=instance.to_number.to_number,
+            quantity_plus=instance.quantity
+        )
+
+
 @receiver(post_save, sender=RetailSaleItem)
 def create_stockmovement_on_save_for_retail(sender, instance, created, **kwargs):
     """
     Update order total on lineitem update/create
     """
     if created:
-        retailer_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.retail_sale.retailer)
+        retailer_warehouse = get_object_or_404(Warehouse, name=instance.retail_sale.retailer_warehouse)
         stock_item_retailer = StockItem.objects.get(warehouse=retailer_warehouse, product=instance.product)
         StockHistoryEntry.objects.create(
             element=stock_item_retailer,
@@ -136,7 +175,7 @@ def create_stockmovement_on_save_for_contstruction(sender, instance, **kwargs):
     """
     if instance.c_invoice.construction_completed == True:
         print("Signal!")
-        constructor_warehouse = get_object_or_404(Warehouse, warehouse_owner=instance.c_invoice.constructor)
+        constructor_warehouse = get_object_or_404(Warehouse, name=instance.c_invoice.constructor_warehouse)
         stock_item_constructor = StockItem.objects.get(warehouse=constructor_warehouse, product=instance.product)
         StockHistoryEntry.objects.create(
             element=stock_item_constructor,

@@ -12,6 +12,8 @@ from .models import (
     ConstructionInvoice,
     ConstructionInvoiceItem,
     ConstructionInvoiceLabourCosts,
+    TransferOrder,
+    TransferOrderItem
 )
 
 
@@ -30,12 +32,24 @@ def create_on_save(sender, instance, created, **kwargs):
 @receiver(post_save, sender=WorkOrder)
 def create_wo_on_save(sender, instance, **kwargs):
     """
-    Create Invoice number
+    Create Work order number
     """
     if instance.work_order_number == "WO00001":
         workorder_count = WorkOrder.objects.filter(company=instance.company).count()
         invoice_prefix = instance.company.invoice_prefix
         instance.work_order_number = invoice_prefix + "WO" + str(workorder_count).zfill(5)
+        instance.save()
+
+
+@receiver(post_save, sender=TransferOrder)
+def create_to_on_save(sender, instance, **kwargs):
+    """
+    Create Transfer Order number
+    """
+    if instance.to_number == "TO00001":
+        to_count = TransferOrder.objects.filter(company=instance.company).count()
+        invoice_prefix = instance.company.invoice_prefix
+        instance.to_number = invoice_prefix + "TO" + str(to_count).zfill(5)
         instance.save()
 
 

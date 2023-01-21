@@ -19,17 +19,19 @@
         <div class="col-8 offset-2 p-3 justify-content-center pb-4">
 
             {% for stock_item in stock_items %}
-                {% if stock_item.quantity > 0 %}
-                    <div class="row stock-list-expand" id="{{ stock_item.id }}">
-                        <div class="col-3">{{ stock_item.warehouse.warehouse_owner.full_name }}</div>
-                        <div  onclick="window.location='{% url 'stock_level_company_level' stock_item.warehouse.warehouse_owner.registration_number %}';" 
-                            class="col-3">{{ stock_item.product.full_name }}
+                {% if stock_item.warehouse.internal_warehouse == False %} 
+                    {% if stock_item.quantity > 0 %}
+                        <div class="row stock-list-expand" id="{{ stock_item.id }}">
+                            <div class="col-3">{{ stock_item.warehouse.warehouse_owner.full_name }}</div>
+                            <div  onclick="window.location='{% url 'stock_level_company_level' stock_item.warehouse.warehouse_owner.registration_number %}';" 
+                                class="col-3">{{ stock_item.product.full_name }}
+                            </div>
+                            <div class="col-2">{{ stock_item.quantity }}</div>
+                            <div class="col-2">{{ stock_item.price }}</div>
+                            <div class="col-2">{{ stock_item.value }}</div>
+                            <hr>
                         </div>
-                        <div class="col-2">{{ stock_item.quantity }}</div>
-                        <div class="col-2">{{ stock_item.price }}</div>
-                        <div class="col-2">{{ stock_item.value }}</div>
-                        <hr>
-                    </div>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 
