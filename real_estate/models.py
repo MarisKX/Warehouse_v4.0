@@ -1,5 +1,6 @@
 from django.db import models
 from companies.models import Company
+from citizens.models import Citizen
 
 # Create your models here.
 
@@ -21,7 +22,8 @@ class RealEstate(models.Model):
     class Meta:
         verbose_name_plural = 'Real Estate'
 
-    owner = models.ForeignKey(Company, null=True, blank=False, on_delete=models.CASCADE, related_name='real_estate_owner')
+    owner_com = models.ForeignKey(Company, null=True, blank=True, on_delete=models.CASCADE, related_name='real_estate_owner_com')
+    owner_pp = models.ForeignKey(Citizen, null=True, blank=True, on_delete=models.CASCADE, related_name='real_estate_owner_pp')
     property_type = models.ForeignKey(RealEstateTypes, null=False, blank=False, on_delete=models.CASCADE, related_name='real_estate_type')
     cadastre_number = models.CharField(max_length=8, blank=False, primary_key=True, default=1)
     street_adress_1 = models.IntegerField(default=0, blank=True, null=True)

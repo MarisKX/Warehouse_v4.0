@@ -5,13 +5,14 @@
 
 {% block page_header %}
     <div class="container header-container">
-        <div class="row">
-            <div class="col"></div>
-        </div>
+        {% include 'includes/top-data.html' %}
     </div>
 {% endblock %}
 
 {% block content %}
+    <div class="main-content">
+        <h4 class="my-5 mx-5">Add New Product/Category</h4>  
+    </div>
     <div class="row">
         <div class="col-8 offset-2 p-3 d-flex justify-content-center pb-4 mt-5">
             <h4 class="m-1" id="toggle_add_category_h">Add New Category</h4>
@@ -44,7 +45,7 @@
                 </div>
                 <!-- Submit button -->
                 <div class="form-outline mb-4 p-1 row">
-                    <button type="submit" class="col-7 offset-2 btn bg-green" name="add-subcategory-btn">Create New Category</button>
+                    <button type="submit" class="col-7 offset-2 btn bg-green" name="add-subcategory-btn">Create New Subcategory</button>
                     <button id="close-subcategory-form" type="submit" class="col-1 offset-1 btn bg-brown"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </form>

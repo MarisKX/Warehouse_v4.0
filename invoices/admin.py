@@ -89,7 +89,7 @@ class RetailSaleAdmin(admin.ModelAdmin):
     list_display = (
         'retail_sale_number',
         'retailer',
-        'customer_city',
+        'customer',
         'date',
         'amount_total',
         'btw_total',

@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8agiu&g8h4^fwula4)tr$n##rwk0!h3c-0_6au&66y-wv0_7if'
+SECRET_KEY = (
+    'django-insecure-8agiu&g8h4^fwula4)tr$n##rwk0!h3c-0_6au&66y-wv0_7if')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,10 +34,10 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth', # allauth
+    'django.contrib.auth',  # allauth
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages', # allauth
+    'django.contrib.messages',  # allauth
     'django.contrib.staticfiles',
     # The following apps are required by allauth
     'django.contrib.sites',
@@ -113,7 +114,9 @@ SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Required by django-allauth
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Acepts logins with username OR email
+
+# Acepts logins with username OR email
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True  # Email required
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Email confirmation required
 # ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True # Email re-confirm
@@ -183,3 +186,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 FIRST_DAY_OF_WEEK = '1'
+
+# Custom settings
+
+CURRENT_YEAR = 1900

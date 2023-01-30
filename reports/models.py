@@ -93,8 +93,7 @@ class Report(models.Model):
                         BankAccount, bank_account_owner_com=e.company)
                     BankAccountEntry.objects.create(
                         bank_account=employee_bank,
-                        description="Salary " + str(self.report_month) + '/'(
-                             + str(self.report_year)),
+                        description="Salary " + str(self.report_month) + '/' + str(self.report_year),
                         amount_plus=e.salary_netto,
                         )
                     BankAccountEntry.objects.create(
@@ -265,8 +264,7 @@ class Report(models.Model):
                     nature_tax_from_wo_dic = all_work_orders.aggregate(
                         Sum('enviroment_tax_on_workorder_total'))
                     nature_tax_from_wo = (
-                        nature_tax_from_wo_dic(
-                            ['enviroment_tax_on_workorder_total__sum'] or 0))
+                        nature_tax_from_wo_dic['enviroment_tax_on_workorder_total__sum'] or 0)
 
                     if nature_tax_from_wo > 0:
                         TaxReport.objects.create(

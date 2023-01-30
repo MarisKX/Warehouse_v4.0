@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 # Create your models here.
@@ -9,7 +10,8 @@ class Citizen(models.Model):
 
     name = models.CharField(max_length=254, blank=True, null=True)
     full_name = models.CharField(max_length=254, blank=True)
-    bsn_number = models.PositiveIntegerField(blank=True, primary_key=True, default=1)
+    bsn_number = models.PositiveIntegerField(
+        blank=True, primary_key=True, default=1)
     street_adress_1 = models.IntegerField(default=0, blank=True)
     street_adress_2 = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
@@ -32,6 +34,8 @@ class Citizen(models.Model):
         """
         if self.bsn_number == 1:
             citizen_count = Citizen.objects.all().count()
-            self.bsn_number = f"19" + str(citizen_count + 1).zfill(5)
+            self.bsn_number = f"" + str(
+                settings.CURRENT_YEAR) + str(
+                    citizen_count + 1).zfill(3)
             self.name = self.full_name.replace(" ", "_").lower()
         super().save(*args, **kwargs)

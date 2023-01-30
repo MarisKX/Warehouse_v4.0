@@ -141,7 +141,6 @@ def stock_level(request):
         return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
     stock_items = StockItem.objects.all().order_by('warehouse')
-    print(stock_items)
 
     context = {
         'stock_items': stock_items,
@@ -204,3 +203,21 @@ def stock_level_company_level(request, registration_number):
     }
 
     return render(request, 'products/stock_level_company_level.html', context)
+
+
+# Stock Level view for company
+def stock_level_warehouse_level(request, id):
+    """ A view to return the product detail page """
+
+    def is_ajax(request):
+        return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+    warehouse = get_object_or_404(Warehouse, id=id)
+    stock_items = StockItem.objects.filter(warehouse=warehouse)
+
+    context = {
+        'warehouse': warehouse,
+        'stock_items': stock_items
+    }
+
+    return render(request, 'products/stock_level_warehouse_level.html', context)

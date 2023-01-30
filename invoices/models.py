@@ -5,6 +5,7 @@ from django.db.models import Sum
 from products.models import Product
 from django.contrib.auth.models import User
 from companies.models import Company, Warehouse
+from citizens.models import Citizen
 
 
 # Create your models here.
@@ -146,7 +147,8 @@ class RetailSale(models.Model):
         Company, on_delete=models.CASCADE, related_name="retailer")
     retailer_warehouse = models.ForeignKey(
         Warehouse, on_delete=models.CASCADE, related_name="retailer_warehouse")
-    customer_city = models.CharField(max_length=56)
+    customer = models.ForeignKey(
+        Citizen, on_delete=models.CASCADE, related_name="customer")
     date = models.DateField(auto_now_add=False)
     retail_sale_paid = models.BooleanField()
     retail_sale_paid_confirmed = models.BooleanField()

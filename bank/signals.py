@@ -56,10 +56,10 @@ def create_transaction_entry_taxes(sender, instance, **kwargs):
         gov_bank = get_object_or_404(BankAccount,
                                      bank_account_owner_com="4750100005"
                                      )
-        #mun_bank = get_object_or_404(BankAccount,
+        # mun_bank = get_object_or_404(BankAccount,
         #                             bank_account_owner_com="4750100021"
         #                             )
-        
+
         if instance.type == '2':
             BankAccountEntry.objects.create(
                     bank_account=tax_payer_bank,
@@ -97,6 +97,12 @@ def create_transaction_entry_for_retail_sales(sender, instance, **kwargs):
                 bank_account=retailer_bank,
                 description=instance.retail_sale_number,
                 amount_plus=instance.amount_total_with_btw,
+            )
+        customer_bank = get_object_or_404(BankAccount, bank_account_owner_pp=instance.customer)
+        BankAccountEntry.objects.create(
+                bank_account=customer_bank,
+                description=instance.retail_sale_number,
+                amount_minus=instance.amount_total_with_btw,
             )
         instance.retail_sale_paid_confirmed = True
         instance.save()

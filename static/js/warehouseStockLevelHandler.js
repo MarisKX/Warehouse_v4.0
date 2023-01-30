@@ -27,27 +27,27 @@ $(document).ready(function(){
 
                     let nameCount=0
                     $.each(product_list_name,function(key, value){
-                        warehouseProductList.append('<div class="row stock-list-per-warehouse mt-4 mb-3"><div class="col-3 text-brown fs-5">' + value + '</div></div><hr>');
+                        warehouseProductList.append('<div class="row stock-list-per-warehouse mt-4 mb-3"><div class="col-3 text-brown fs-6">' + value + '</div></div><hr>');
                         nameCount += 1
                     });
                     let quantityCount = 0
                     $.each(product_list_quantity,function(key, value){
-                        $(".stock-list-per-warehouse").eq(quantityCount).append('<div class="col-3 text-brown fs-5">' + value + '</div>');
+                        $(".stock-list-per-warehouse").eq(quantityCount).append('<div class="col-3 text-brown fs-6">' + value + '</div>');
                         quantityCount +=1
                     });
                     let priceCount = 0
                     $.each(product_list_price,function(key, value){
-                        $(".stock-list-per-warehouse").eq(priceCount).append('<div class="col-3 text-brown fs-5">' + value + '</div>');
+                        $(".stock-list-per-warehouse").eq(priceCount).append('<div class="col-3 text-brown fs-6">' + value + '</div>');
                         priceCount +=1
                     });
                     let valueCount = 0
                     $.each(product_list_value,function(key, value){
-                        $(".stock-list-per-warehouse").eq(valueCount).append('<div class="col-3 text-brown fs-5">' + value + '</div>');
+                        $(".stock-list-per-warehouse").eq(valueCount).append('<div class="col-3 text-brown fs-6">' + value + '</div>');
                         valueCount +=1
                     });
 
                 } else {
-                    warehouseProductList.append('<div class="row stock-list-per-warehouse mt-4 mb-3"><div class="col-3 text-red fs-3 text">No Entries Found</div></div><hr>');
+                    warehouseProductList.append('<div class="row stock-list-per-warehouse mt-4 mb-3"><div class="col-3 text-red fs-4 text">No Entries Found</div></div><hr>');
                 }
             }
         });

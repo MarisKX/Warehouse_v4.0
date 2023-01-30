@@ -39,9 +39,9 @@ def create_stockmovement_on_save(sender, instance, created, **kwargs):
     """
     if created:
         suplier_warehouse = get_object_or_404(
-            Warehouse, warehouse_owner=instance.invoice.suplier_warehouse)
+            Warehouse, name=instance.invoice.suplier_warehouse)
         customer_warehouse = get_object_or_404(
-            Warehouse, warehouse_owner=instance.invoice.customer_warehouse)
+            Warehouse, name=instance.invoice.customer_warehouse)
         try:
             stock_item_suplier = StockItem.objects.get(
                 warehouse=suplier_warehouse, product=instance.product)
@@ -186,6 +186,8 @@ def create_stockmovement_on_save_for_retail(
             Warehouse, name=instance.retail_sale.retailer_warehouse)
         stock_item_retailer = StockItem.objects.get(
             warehouse=retailer_warehouse, product=instance.product)
+        stock_item_retailer.price = instance.price
+        stock_item_retailer.save()
         StockHistoryEntry.objects.create(
             element=stock_item_retailer,
             doc_nr=instance.retail_sale.retail_sale_number,

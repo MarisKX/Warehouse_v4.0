@@ -35,7 +35,8 @@ class RealEstateAdmin(admin.ModelAdmin):
     inlines = (RealEstateCoordinatesAdmin, )
     readonly_fields = ('cadastre_number', )
     list_display = (
-        'owner',
+        'owner_com',
+        'owner_pp',
         'property_type',
         'street_adress_1',
         'street_adress_2',
@@ -45,7 +46,7 @@ class RealEstateAdmin(admin.ModelAdmin):
         'field_size',
     )
 
-    ordering = ('owner',)
+    ordering = ('owner_com', 'owner_pp')
 
 
 admin.site.register(RealEstate, RealEstateAdmin)
