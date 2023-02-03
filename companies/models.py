@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
+from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from citizens.models import Citizen
+from home.models import AppSettings
 
 
 # Create your models here.
@@ -143,10 +145,16 @@ class Employees(models.Model):
         Override the original save method to set the salary levels
         if it hasn't been set already.
         """
+        latest_settings = get_object_or_404(AppSettings, valid=True)
         self.salary_vsaoi_dd = (self.salary_brutto / 100) * 35
         self.salary_vsaoi_dn = (self.salary_brutto / 100) * 9
-        self.salary_iin = ((
-            self.salary_brutto - self.salary_vsaoi_dn - 100) / 100) * 15
+        iin_calc = (
+            (self.salary_brutto - self.salary_vsaoi_dn - latest_settings.no_iin_level) / 100) * 15
+        if iin_calc > 0:
+            self.salary_iin = ((
+                self.salary_brutto - self.salary_vsaoi_dn - latest_settings.no_iin_level) / 100) * 15
+        else:
+            self.salary_iin = 0
         self.salary_netto = (
             self.salary_brutto - self.salary_vsaoi_dn - self.salary_iin)
         super().save(*args, **kwargs)

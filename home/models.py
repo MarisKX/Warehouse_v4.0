@@ -14,6 +14,8 @@ class AppSettings(models.Model):
     valid_from = models.DateField(auto_now_add=False)
     valid_till = models.DateField(auto_now_add=False)
     acions_per_day = models.PositiveIntegerField(default=1)
+    no_iin_level = models.DecimalField(
+        max_digits=8, decimal_places=2, blank=True, null=True)
     valid = models.BooleanField()
 
     def save(self, *args, **kwargs):
