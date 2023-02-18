@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Citizen
 
-# Register your models here.
 
 class CitizenAdmin(admin.ModelAdmin):
     readonly_fields = ('name', 'bsn_number')

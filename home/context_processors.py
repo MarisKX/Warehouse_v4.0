@@ -1,3 +1,4 @@
+from datetime import timedelta, date
 from companies.models import Company
 from django.shortcuts import get_object_or_404
 from invoices.models import Invoice, WorkOrder, RetailSale, ConstructionInvoice
@@ -35,12 +36,18 @@ def extras(request):
             invoice_count + workorder_count + retail_count
         )
         actions_left = actions_per_day - action_count
+
+        if actions_left > 0:
+            today = last_action_date
+        else:
+            today = last_action_date + timedelta(days=1)
         return {
             'company': company,
             'last_action_date': last_action_date,
             'actions_left': actions_left,
             'all_companies_with_stock': all_companies_with_stock,
             'valid_settings': valid_settings,
+            'today': today,
         }
     else:
         all_companies_with_stock = Company.objects.filter(

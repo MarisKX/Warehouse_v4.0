@@ -6,6 +6,9 @@ from django.http import JsonResponse, HttpResponseRedirect
 from .forms import ProductForm, CategoryForm, SubCategoryForm
 from django.db.models import Q
 
+# For PDF files
+from django.http import FileResponse
+
 
 # All Products view
 def all_products(request):

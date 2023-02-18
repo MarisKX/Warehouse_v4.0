@@ -3,7 +3,6 @@ from .models import (
     Product,
     Category,
     SubCategory,
-    ProductPrices
     )
 
 # Register your models here.
@@ -27,17 +26,7 @@ class CategoryAdmin(admin.ModelAdmin):
     )
 
 
-class ProductPricesAdmin(admin.TabularInline):
-    model = ProductPrices
-    readonly_fields = ()
-    list_display = (
-        'product',
-        'price',
-    )
-
-
 class ProductAdmin(admin.ModelAdmin):
-    inlines = (ProductPricesAdmin,)
     readonly_fields = ('code', 'name', )
     list_display = (
         'full_name',

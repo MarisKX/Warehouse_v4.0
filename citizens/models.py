@@ -37,5 +37,5 @@ class Citizen(models.Model):
             self.bsn_number = f"" + str(
                 settings.CURRENT_YEAR) + str(
                     citizen_count + 1).zfill(3)
-            self.name = self.full_name.replace(" ", "_").lower()
+        self.name = self.full_name.replace(" ", "_").lower()
         super().save(*args, **kwargs)

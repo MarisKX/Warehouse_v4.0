@@ -1,6 +1,4 @@
 from django.db import models
-from companies.models import Company
-from companies.models import Warehouse
 
 
 class Category(models.Model):
@@ -82,13 +80,3 @@ class Product(models.Model):
                 str(same_cat_products_count + 1).zfill(3)
                 )
         super().save(*args, **kwargs)
-
-
-class ProductPrices(models.Model):
-
-    class Meta:
-        verbose_name_plural = 'Product Prices'
-
-    product = models.ForeignKey('Product', null=True, blank=True, on_delete=models.SET_NULL)
-    warehouse = models.ForeignKey(Warehouse, null=True, blank=True, on_delete=models.SET_NULL)
-    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
